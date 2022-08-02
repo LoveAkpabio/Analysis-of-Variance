@@ -1,0 +1,100 @@
+---
+title: "Chi Analysis"
+author: "LoveA"
+date: '2022-08-01'
+output: html_document
+---
+
+                           Chi - Squared Analysis
+
+Two types of Chi -Squared Test:
+
+a) goodness of fit
+
+b) Test of independence
+
+Data: iris => from R data
+Load libraries
+```{r}
+library(tidyverse)
+library(patchwork)
+```
+
+To view the dataset 
+```{r}
+View(iris)
+```
+
+Converting numerical variables to categorical variable
+
+```{r}
+flower <- iris %>% 
+  mutate(size = cut(Sepal.Length,
+                    breaks = 3,
+                    labels = c("Small", "Medium", "Large"))) %>% 
+  select(Species, size)
+```
+
+Let's view our new dataset
+
+```{r}
+table(flower)
+```
+
+Chi Square Test of goodness of fit
+
+Research Question: Is there statistically significant difference in the proportion
+                   of flowers that are small, medium and large (alpha = 0.05)
+
+* H0: The proportion of flowers that are small, medium sized and large are equal
+
+* H1: The proportion of flower that are small, medium and large are not eqaul
+
+```{r}
+table(flower$size)
+flower %>% 
+  select(size) %>% 
+  table() %>% 
+  chisq.test()
+```
+
+The above line of code could also be written as
+```{r}
+chisq.test(table(flower$size))
+```
+
+p-value = 6.673e-07
+
+Reject the H0(that the proportions are equal)
+Because there is evidence that the probability of sample data providing a difference of this magnitude 
+or more is < 0.05
+
+Chi Squared Test of independencies
+
+* H0: The variables are Independent
+There is no relationship between the variables
+knowing the value of one variable does not help to predict the value of the
+other variable
+
+* H1: The variables are dependent 
+There is a relationship between the variables, knowing the value of one does
+help to predict the value of the other
+
+```{r}
+chisq.test(table(flower))
+```
+
+```{r}
+flower %>% 
+  table %>% 
+  chisq.test()
+```
+
+```{r}
+table(flower) %>% 
+  chisq.test()
+```
+
+p-value < 2.2e-16
+
+
